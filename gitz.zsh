@@ -7,7 +7,7 @@ GITZ_COMMANDS=(recent unmerged graph tags append-path)
 # gitz main plugin chooser menu
 
 local MAIN=menu
-local MAIN_KEY='~'
+local MAIN_KEY='ƒ'
 GITZ_MAIN_KEY=$MAIN_KEY
 
 _gitz-main() {
@@ -45,7 +45,7 @@ bindkey $MAIN_KEY gitz
 # gitz favourite
 
 local FAVOURITE=recent
-local FAVOURITE_KEY='`'
+local FAVOURITE_KEY='†'
 
 _gitz-favourite() {
 	if ! is_in_git_repo || ! is_git_command; then
@@ -63,15 +63,14 @@ bindkey $FAVOURITE_KEY gitz #-favourite
 for command in menu $GITZ_COMMANDS; do
 	eval ". $(dirname $0)/gitz-$command.zsh"
 
-	# NOTE: disabled for now since it delays the `~` key in the terminal
 	# load shortcut, if any
-	# local shortcut=$(eval "_gitz-$command-shortcut 2>/dev/null")
-	# if [ -n "$shortcut" ]; then
-	# 	eval "_gitz-shortcut-$shortcut() { _gitz-$command }"
+	local shortcut=$(eval "_gitz-$command-shortcut 2>/dev/null")
+	if [ -n "$shortcut" ]; then
+		eval "_gitz-shortcut-$shortcut() { _gitz-$command }"
 
-	# 	local shortcut_key="${GITZ_MAIN_KEY}$shortcut"
-	# 	bindkey $shortcut_key gitz
-	# fi
+		local shortcut_key="${GITZ_MAIN_KEY}$shortcut"
+		bindkey $shortcut_key gitz
+	fi
 done
 
 # git command completion
